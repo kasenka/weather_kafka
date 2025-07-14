@@ -16,13 +16,23 @@ public class GenerateRandomWeather {
         List<Weather> weatherWeek = new ArrayList<>();
 
         for (int i = 0; i < CITIES.size(); i++) {
-            Weather weather = new Weather();
+            for (int j = 0; j < 7; j++) {
+                Weather weather = new Weather();
 
-            weather.setCity(CITIES.get(i));
-            weather.setDate(String.valueOf(date.plusDays(i)));
-            weather.setTemperature(random.nextInt(36));
-            weather.setWeatherType(WEATHER_TYPES.get(random.nextInt(WEATHER_TYPES.size())));
+                weather.setCity(CITIES.get(i));
+                weather.setDate(String.valueOf(date.plusDays(j)));
+                weather.setTemperature(random.nextInt(36));
+                weather.setWeatherType(WEATHER_TYPES.get(random.nextInt(WEATHER_TYPES.size())));
+
+                weatherWeek.add(weather);
+            }
         }
         return weatherWeek;
     }
+
+//    public static void main(String[] args) {
+//        for (Weather weather: generateRandomWeatherForWeek(LocalDate.now())){
+//            System.out.println(weather.toString());
+//        };
+//    }
 }
