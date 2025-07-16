@@ -38,7 +38,7 @@ public class WeatherConcumer {
         int maxRainyDays = 0;
         int maxTemperatureOnWeeek = 0;
         String maxTemperatureCity = "";
-        int lowestMeanTemperatureOnWeeek = 0;
+        int lowestMeanTemperatureOnWeeek = 36;
 
         Map<String, Map<String, Integer>> weekStatistic = new HashMap<>();
 
@@ -71,8 +71,17 @@ public class WeatherConcumer {
             }if (cityInfo.getValue().get("temperatureSum") / 7 < lowestMeanTemperatureOnWeeek){
                 lowestMeanTemperatureOnWeeek = cityInfo.getValue().get("temperatureSum") / 7;
             }
-
         }
+
+        System.out.println("\n===== Недельная статистика по погоде =====");
+
+        System.out.println("Город с максимальной температурой за неделю: " + maxTemperatureCity +
+                " (" + maxTemperatureOnWeeek + "°C)");
+
+        System.out.println("Наибольшее количество дождливых дней за неделю: " + maxRainyDays);
+
+        System.out.println("Самая низкая средняя температура за неделю: " + lowestMeanTemperatureOnWeeek + "°C");
+
     }
 
     public void run() throws JsonProcessingException {
@@ -80,15 +89,18 @@ public class WeatherConcumer {
             try{
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
 
-                for(ConsumerRecord<String, String> rec : records){
+                for(ConsumerRecord<String, String> rec : records) {
                     List<Weather> weekWeather = mapper.
-                            readValue(rec.value(), new TypeReference<List<Weather>>() {});
+                            readValue(rec.value(), new TypeReference<List<Weather>>() {
+                            });
 
                     System.out.println("NEW WEEK_________________"+weekWeather.size());
                     for(Weather weather : weekWeather){
                         System.out.println(weather.toString());
                     }
-//                    statistic(weekWeather);
+                    if (!weekWeather.isEmpty()) {
+                        statistic(weekWeather);
+                    }
                 }
             }catch (Exception e){
                 System.out.println("Error while reading weather data");
